@@ -1,0 +1,180 @@
+//Para utilizar el programa en Windows es necesario cambiar el nombre de la primera librería y tenerla instalada en el PC
+//Para utilizar el programa en MAC es necesario tener la primera libreria instalada en el ordenador y especificarle a Xcode la ubicacion del Framework
+#include <SDL2_image/SDL_image.h>
+#include <stdio.h>
+#include <string>
+
+//Screen dimension constants
+const int SCREEN_WIDTH = 640;
+const int SCREEN_HEIGHT = 480;
+
+//Iniciamos SDL y creamos ventana
+bool init();
+
+//Cargamos media
+bool loadMedia();
+
+//Libera el media y cierrra SDL
+void close();
+
+//Carga una imagen individual
+SDL_Surface* loadSurface( std::string path );
+
+//Ventana que vamos a renderizar
+SDL_Window* gWindow = NULL;
+
+//La superficie contenida por la ventana
+SDL_Surface* gScreenSurface = NULL;
+
+//Actual imagen en PNG
+SDL_Surface* gPNGSurface = NULL;
+
+bool init()
+{
+    //Iniciamos flag
+    bool success = true;
+    
+    //Iniciamos SDL
+    if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+    {
+        printf( "SDL no se puede inicializar! SDL Error: %s\n", SDL_GetError() );
+        success = false;
+    }
+    else
+    {
+        //Creamos ventana
+        gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+        if( gWindow == NULL )
+        {
+            printf( "La ventana no se puede crear! SDL Error: %s\n", SDL_GetError() );
+            success = false;
+        }
+        else
+        {
+            //Inicializa la carga del PNG
+            int imgFlags = IMG_INIT_PNG;
+            if( !( IMG_Init( imgFlags ) & imgFlags ) )
+            {
+                printf( "SDL_image no se puede incicializar! SDL_image Error: %s\n", IMG_GetError() );
+                success = false;
+            }
+            else
+            {
+                //Obtiene la surface de la ventana
+                gScreenSurface = SDL_GetWindowSurface( gWindow );
+            }
+        }
+    }
+    
+    return success;
+}
+
+bool loadMedia()
+{
+    //Cargar la flag exitosa
+    bool success = true;
+    
+    //Cargar la imagen PNG
+    gPNGSurface = loadSurface( "loaded.png" );
+    if( gPNGSurface == NULL )
+    {
+        printf( "Fallo al Cargar la imagen PNG!\n" );
+        success = false;
+    }
+    
+
+    
+    return success;
+}
+
+void close()
+{
+    //Libera imagen cargada
+    SDL_FreeSurface( gPNGSurface );
+    gPNGSurface = NULL;
+    
+    //Destruye la ventana
+    SDL_DestroyWindow( gWindow );
+    gWindow = NULL;
+    
+    //Quita los subsistemas de SDL
+    IMG_Quit();
+    SDL_Quit();
+}
+
+SDL_Surface* loadSurface( std::string path )
+{
+    //Imagen optimizada final
+    SDL_Surface* optimizedSurface = NULL;
+    
+    //Abre la imagen con su propio PATH
+    SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
+    if( loadedSurface == NULL )
+    {
+        printf( "No se ha podido la foto %s! SDL_image Error: %s\n", path.c_str(), IMG_GetError() );
+    }
+    else
+    {
+        //Convierte la surface al formato de la pantalla
+        optimizedSurface = SDL_ConvertSurface( loadedSurface, gScreenSurface->format, NULL );
+        if( optimizedSurface == NULL )
+        {
+            printf( "No se ha podido actualizar la imagen %s! SDL Error: %s\n", path.c_str(), SDL_GetError() );
+        }
+        
+        //Desechamos la superficie vieja
+        SDL_FreeSurface( loadedSurface );
+    }
+    
+    return optimizedSurface;
+}
+
+int main( int argc, char* args[] )
+{
+    //Inicializa SDL y carga la imagen
+    if( !init() )
+    {
+        printf( "Fallo al inicializar!\n" );
+    }
+    else
+    {
+        //Load media
+        if( !loadMedia() )
+        {
+            printf( "Fallo al cargar media!\n" );
+        }
+        else
+        {
+            //Main loop flag
+            bool quit = false;
+            
+            //Event handler
+            SDL_Event e;
+            
+            //Cuando la aplicacion esta corriendo
+            while( !quit )
+            {
+                //Handle events on queue
+                while( SDL_PollEvent( &e ) != 0 )
+                {
+                    //User requests quit
+                    if( e.type == SDL_QUIT )
+                    {
+                        quit = true;
+                    }
+                }
+                
+                //Aplica la imagen PNG
+                SDL_BlitSurface( gPNGSurface, NULL, gScreenSurface, NULL );
+                
+                //Actualiza la surface
+                SDL_UpdateWindowSurface( gWindow );
+            }
+        }
+    }
+    
+    //Cierra recurso y finaliza SDL
+    close();
+    
+    return 0;
+}
