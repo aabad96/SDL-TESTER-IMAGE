@@ -1,0 +1,143 @@
+//
+//  main2.cpp
+//  PRUEBA MULTIVENTANA
+//
+//  Created by Alejandro Abad Martínez on 15/6/16.
+//  Copyright © 2016 Alejandro Abad Martínez. All rights reserved.
+//
+
+#include <iostream>
+#include <SDL2/SDL.h>
+//Screen dimension constants
+const int SCREEN_WIDTH = 791;
+const int SCREEN_HEIGHT = 512;
+
+
+//inicializa SDL
+bool init();
+
+//cargamos imagenes
+bool loadMedia();
+
+//liberacion de memoria y cierre de SDL
+void close();
+//render de la ventana
+SDL_Window* gWindow = NULL;
+
+//surface de la ventana
+SDL_Surface* gScreenSurface = NULL;
+
+//imagen que se va a pasar
+SDL_Surface* glina = NULL;
+SDL_Surface* gtool = NULL;
+bool init()
+{
+    //iniciamos flag
+    bool success = true;
+    
+    //inicializamos SDL
+    if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+    {
+        printf( "SDL no pudo inicializarse! SDL_Error: %s\n", SDL_GetError() );
+        success = false;
+    }
+    else
+    {
+        //Creamos ventana
+        gWindow = SDL_CreateWindow( "SDL ALEJANDRO", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+        if( gWindow == NULL )
+        {
+            printf( "la ventana no se pudo crear! SDL_Error: %s\n", SDL_GetError() );
+            success = false;
+        }
+        else
+        {
+            //cogemos la ventana de la surface
+            gScreenSurface = SDL_GetWindowSurface( gWindow );
+        }
+    }
+    
+    return success;
+}
+bool loadMedia()
+{
+    //cargamos la flaf exitosa
+    bool success = true;
+    
+    //cargamos imagenes
+    glina = SDL_LoadBMP( "lena.bmp" );
+    if( glina == NULL )
+    {
+        printf( "No ha sido posible cargar la imagen %s! SDL Error: %s\n", "lena.bmp", SDL_GetError() );
+        success = false;
+    }
+    glina = SDL_LoadBMP( "lena.bmp" );
+    if( glina == NULL )
+    {
+        printf( "No ha sido posible cargar la imagen %s! SDL Error: %s\n", "lena.bmp", SDL_GetError() );
+        success = false;
+    }
+    gtool = SDL_LoadBMP( "toolbar.bmp" );
+    if( gtool == NULL )
+    {
+        printf( "No ha sido posible cargar la imagen %s! SDL Error: %s\n", "toolbar.bmp", SDL_GetError() );
+        success = false;
+    }
+    gtool = SDL_LoadBMP( "toolbar.bmp" );
+    if( gtool == NULL )
+    {
+        printf( "No ha sido posible cargar la imagen %s! SDL Error: %s\n", "toolbar.bmp", SDL_GetError() );
+        success = false;
+    }
+
+
+    
+    return success;
+}
+void close()
+{
+    //liberamos la surface
+    SDL_FreeSurface(glina);
+    SDL_FreeSurface(gtool);
+    glina = NULL;
+    gtool = NULL;
+    
+    //Destruimos ventana
+    SDL_DestroyWindow( gWindow );
+    gWindow = NULL;
+    
+    //quitamos los procesos de SDL
+    SDL_Quit();
+}
+int main( int argc, char* args[] )
+{
+    //iniciamos sdl y creamos ventana
+    if( !init() )
+    {
+        printf( "Fallo al inicializar!\n" );
+    }
+    else
+    {
+        //Cargamos las imágenes
+        if( !loadMedia() )
+        {
+            printf( "Fallo al cargar las imagenes!\n" );
+        }
+        else
+        {
+            //Aplicamos la imagen
+            SDL_BlitSurface( glina, NULL, gScreenSurface, NULL );
+            SDL_BlitSurface( gtool, NULL, gScreenSurface, NULL);
+            //actualizamos la surface
+            SDL_UpdateWindowSurface( gWindow );
+            //esperamos
+            SDL_Delay( 10000 );
+        }
+    }
+    
+    //liberamos memoria y cerramos SDL
+    
+    close();
+    
+    return 0;
+}
