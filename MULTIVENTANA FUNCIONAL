@@ -1,0 +1,130 @@
+//
+//  main.cpp
+//  PRUEBA MULTIVENTANA
+//
+//  Created by Alejandro Abad Martínez on 15/6/16.
+//  Copyright © 2016 Alejandro Abad Martínez. All rights reserved.
+//
+
+#include <iostream>
+#include <fstream>
+#include <string.h>
+#include <SDL2/SDL.h>
+#include <SDL2_image/SDL_image.h>
+#include "Multiventana.h"
+
+
+//Screen dimension constants
+const int SCREEN_WIDTH = 791;
+const int SCREEN_HEIGHT = 512;
+/*
+ srcrect.x = 0;
+ srcrect.y = 0;
+ srcrect.w = 3166;
+ srcrect.h = 1534;
+ dstrect.x = 0;
+ dstrect.y = 77;
+ dstrect.w = 791;
+ dstrect.h = 435;
+ */
+
+
+
+
+
+SDL_Window* init_ventana(){
+    
+    //iniciamos flag
+    SDL_Window* success = NULL;
+    
+    //inicializamos SDL
+    if( SDL_Init( SDL_INIT_VIDEO ) < 0 ){
+        printf( "SDL no pudo inicializarse! SDL_Error: %s\n", SDL_GetError() );
+        
+    }
+    else
+    {
+        //Creamos ventana
+        success = SDL_CreateWindow( "SDL ALEJANDRO", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+        
+    }
+    return success;
+}
+//imagen que se va a pasar
+SDL_Surface* loadMedia_gtool()
+{
+    //imagen que se va a pasar
+    SDL_Surface* gtool ;
+    
+    //cargamos imagenes
+    gtool = IMG_Load("toolbar");
+    return gtool;
+}
+
+//imagen que se va a pasar
+SDL_Surface* loadMedia_glina(const char *range)
+{
+    //imagen que se va a pasar
+    SDL_Surface* glina;
+    
+    //cargamos imagenes
+    
+    glina = IMG_Load(range);
+    
+    if (glina==NULL) {
+        std::cout<<"sere fea"<<std::endl;
+    }
+    return glina;
+}
+
+SDL_Texture* textura_glina(SDL_Renderer* render, const char *range){
+    //surface de la ventana
+    SDL_Surface* media_glina;
+    
+   
+    SDL_Texture* t_glina=NULL;
+    
+    media_glina=loadMedia_glina(range);
+    
+    
+    if (media_glina==NULL) {
+        std::cout<< "Error no se pudo cargar la imagen1"<<std::endl;
+    }else t_glina= SDL_CreateTextureFromSurface(render, media_glina);
+    
+    SDL_FreeSurface(media_glina);
+    return t_glina;
+    
+}SDL_Texture* textura_gtool(SDL_Renderer* render){
+    SDL_Surface* media_gtool=NULL;
+     SDL_Texture* t_gtool=NULL;
+    media_gtool=loadMedia_gtool();
+    
+    if (media_gtool==NULL){
+        std::cout<< "Error no se pudo cargar la imagen2"<<std::endl;
+    }
+    t_gtool= SDL_CreateTextureFromSurface(render, media_gtool);
+    SDL_FreeSurface(media_gtool);
+    return t_gtool;
+}
+
+
+void cargar_texturas( SDL_Texture* text_glina, SDL_Texture* text_gtool, SDL_Rect * srcrect,  SDL_Rect * dstrect)
+{
+    SDL_Renderer* rend=NULL;
+    SDL_Window* ventana=NULL;
+    SDL_Texture* t_glina=NULL;
+    SDL_Texture* t_gtool=NULL;
+    ventana=init_ventana();
+    
+    rend= SDL_CreateRenderer(ventana, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    t_gtool=textura_gtool(rend);
+    t_glina=textura_glina(rend, "/Users/Alejandro/Desktop/ARCHIVOS DE XCODE/PRUEBA_MULTIVENTANA_DEFINITIVA-hhgvbailkmdwafhhrnucwdwupann/Build/Products/Debug/prueba.bmp");
+    
+    SDL_RenderClear(rend);
+    SDL_RenderCopy(rend,t_gtool , NULL, NULL);
+    SDL_RenderCopy(rend, t_glina, srcrect, dstrect);
+    SDL_RenderPresent(rend);
+    
+    
+}
+int main ()
