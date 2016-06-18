@@ -1,0 +1,14 @@
+void Drw_Aspa (SDL_Renderer * render,T_Coords center){
+    Sint32 coordx,coordy;
+    Sint32 corxv,corxh,coryh,coryv;
+    
+    coordx=center.get_xPos();
+    coordy=center.get_yPos();
+    corxv=coordx-20;
+    corxh=coordx+20;
+    coryv=coordy-20;
+    coryh=coordy+20;
+    SDL_RenderDrawLine(render, corxv,coordy , corxh, coordy);
+    SDL_RenderDrawLine(render, coordx, coryv, coordx, coryh);
+    
+}
