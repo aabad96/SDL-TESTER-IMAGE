@@ -12,23 +12,8 @@
 #include <SDL2_ttf/SDL_ttf.h>
 #include "cleanup.h"
 #include <sstream>
+#include "Texto.h"
 
-SDL_Texture* tex_medidaca1(long double ca1,SDL_Renderer *ren);
-SDL_Texture* tex_medidaca2(long double ca2, SDL_Renderer *ren);
-SDL_Texture* renderText(const std::string &message, const std::string &fontFile, SDL_Color color,
-                        int fontSize, SDL_Renderer *renderer);
-
-//Screen attributes
-const int SCREEN_WIDTH  = 800;
-const int SCREEN_HEIGHT = 76;
-const int posicion1x=734;//Posicion x del primer calculo
-const int posicion1y=15;// posiccion y del primer calculo
-const int posicion2x=734;// posicion x del segundo calculo
-const int posicion2y=46;// posicion y del segundo calculo
-
-void renderTexture(SDL_Texture *tex, SDL_Renderer *ren, SDL_Rect dst, SDL_Rect *clip = nullptr){
-    SDL_RenderCopy(ren, tex, clip, &dst);
-}
 
 void renderTexture(SDL_Texture *tex, SDL_Renderer *ren, int x, int y, SDL_Rect *clip = nullptr){
     SDL_Rect dst;
@@ -63,7 +48,6 @@ SDL_Texture* tex_medidaca1(long double ca1,SDL_Renderer *ren){
     imagen = renderText(calculo1,"Amble-Bold.ttf",color,20,ren); //devuelve un puntero como textura, descargar fuente en el proyecto y enviarla en la carpeta //
     return imagen;
 }
-
 SDL_Texture* tex_medidaca2(long double ca2,SDL_Renderer *ren){
     
     long double aux_cal2=ca2;
@@ -75,9 +59,6 @@ SDL_Texture* tex_medidaca2(long double ca2,SDL_Renderer *ren){
     picture = renderText(calculo2,"Amble-Bold.ttf",color,20,ren); //devuelve un puntero como textura, descargar fuente en el proyecto y enviarla en la carpeta //
     return picture;
 }
-
-
-
 SDL_Texture* renderText(const std::string &message, const std::string &fontFile, SDL_Color color,
                         int fontSize, SDL_Renderer *renderer)
 {
@@ -104,3 +85,4 @@ SDL_Texture* renderText(const std::string &message, const std::string &fontFile,
     TTF_CloseFont(font);
     return texture;
 }
+
