@@ -2,12 +2,13 @@
 #define T_TOOLBARBUTTON_H
 #include "T_Coords.h"
 #include <string>
-enum Button_Type{UNDO, OPEN_I, F_POINT, S_POINT, SAVE, CLOSE,DEFAULT_B}; /* UNDO: Deshacer,
-                                                                            OPEN_I: Abrir Fichero,
+enum Button_Type{UNDO, OPEN_I, F_POINT, S_POINT, SAVE,CLOSE , S_CALCS,DEFAULT_B}; /* UNDO: Deshacer
+                                                                            OPEN_I: Abrir Fichero
                                                                             F_POINT: Agujero Mentoniano
                                                                             S_POINT: Cuerpo Mandibular
                                                                             SAVE: Guardar datos
                                                                             CLOSE: Cerrar el programa
+                                                                            S_CALCS: Calculos realizados
                                                                             DEFAULT_B: valor por defecto, al inicializar
                                                                             */
 class T_ToolbarButton

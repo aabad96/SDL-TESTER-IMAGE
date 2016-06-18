@@ -31,5 +31,3 @@ Button_Type T_ToolbarButton ::  get_ButtonType(void)
     return Btn_Class;
 }
 
-
-
