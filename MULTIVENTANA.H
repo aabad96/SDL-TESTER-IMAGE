@@ -14,13 +14,13 @@ SDL_Window* init_ventana();
 
 SDL_Surface* loadMedia_gtool();
 
-SDL_Surface* loadMedia_glina(const char *range);
+SDL_Surface* loadMedia_gradiografia(const char *range);
 
 SDL_Texture* textura_gtool(SDL_Renderer* render);
 
-void cargar_texturas( SDL_Texture* text_glina, SDL_Texture* text_gtool, SDL_Rect * srcrect,  SDL_Rect * dstrect);
+void cargar_texturas( SDL_Texture* text_gradiografia, SDL_Texture* text_gtool, SDL_Rect * srcrect,  SDL_Rect * dstrect);
 
-SDL_Texture* textura_glina(SDL_Renderer* render, const char *range);
+SDL_Texture* textura_gradiografia(SDL_Renderer* render, const char *range);
 
 
 
