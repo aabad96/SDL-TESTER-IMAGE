@@ -1,166 +1,129 @@
-#include <string>
+//Programa principal SDL Dentist_Labs
+// Grupo ONPI 17/06/16
+
 #include <iostream>
+#include <string>
 #include <SDL.h>
-#include <SDL_ttf.h>
 #include "cleanup.h"
-
-/*
- * Lesson 6: True Type Fonts with SDL_ttf
- */
-//Screen attributes
-const int SCREEN_WIDTH  = 640;
-const int SCREEN_HEIGHT = 480;
-
-/*
- * Log an SDL error with some error message to the output stream of our choice
- * @param os The output stream to write the message too
- * @param msg The error message to write, format will be msg error: SDL_GetError()
- */
-void logSDLError(std::ostream &os, const std::string &msg){
-	os << msg << " error: " << SDL_GetError() << std::endl;
-}
-/*
- * Draw an SDL_Texture to an SDL_Renderer at some destination rect
- * taking a clip of the texture if desired
- * @param tex The source texture we want to draw
- * @param rend The renderer we want to draw too
- * @param dst The destination rectangle to render the texture too
- * @param clip The sub-section of the texture to draw (clipping rect)
- *		default of nullptr draws the entire texture
- */
-void renderTexture(SDL_Texture *tex, SDL_Renderer *ren, SDL_Rect dst, SDL_Rect *clip = nullptr){
-	SDL_RenderCopy(ren, tex, clip, &dst);
-}
-/*
- * Draw an SDL_Texture to an SDL_Renderer at position x, y, preserving
- * the texture's width and height and taking a clip of the texture if desired
- * If a clip is passed, the clip's width and height will be used instead of the texture's
- * @param tex The source texture we want to draw
- * @param rend The renderer we want to draw too
- * @param x The x coordinate to draw too
- * @param y The y coordinate to draw too
- * @param clip The sub-section of the texture to draw (clipping rect)
- *		default of nullptr draws the entire texture
- */
-void renderTexture(SDL_Texture *tex, SDL_Renderer *ren, int x, int y, SDL_Rect *clip = nullptr){
-	SDL_Rect dst;
-	dst.x = x;
-	dst.y = y;
-	if (clip != nullptr){
-		dst.w = clip->w;
-		dst.h = clip->h;
-	}
-	else {
-		SDL_QueryTexture(tex, NULL, NULL, &dst.w, &dst.h);
-	}
-	renderTexture(tex, ren, dst, clip);
-}
-/*
- * Render the message we want to display to a texture for drawing
- * @param message The message we want to display
- * @param fontFile The font we want to use to render the text
- * @param color The color we want the text to be
- * @param fontSize The size we want the font to be
- * @param renderer The renderer to load the texture in
- * @return An SDL_Texture containing the rendered message, or nullptr if something went wrong
- */
-SDL_Texture* renderText(const std::string &message, const std::string &fontFile, SDL_Color color,
-		int fontSize, SDL_Renderer *renderer)
-{
-	//Open the font
-	TTF_Font *font = TTF_OpenFont(fontFile.c_str(), fontSize);
-	if (font == nullptr){
-		logSDLError(std::cout, "TTF_OpenFont");
-		return nullptr;
-	}
-	//We need to first render to a surface as that's what TTF_RenderText returns, then
-	//load that surface into a texture
-	SDL_Surface *surf = TTF_RenderText_Blended(font, message.c_str(), color);
-	if (surf == nullptr){
-		TTF_CloseFont(font);
-		logSDLError(std::cout, "TTF_RenderText");
-		return nullptr;
-	}
-	SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surf);
-	if (texture == nullptr){
-		logSDLError(std::cout, "CreateTexture");
-	}
-	//Clean up the surface and font
-	SDL_FreeSurface(surf);
-	TTF_CloseFont(font);
-	return texture;
-}
-
+#include "Abrir_Archivos.h"
+#include "T_Coords.h"
+#include "Calculos_Trazado.h"
+#include "Comp_boton.h"
+#include "Operaciones_Trazado_Deshacer.h"
+#include "T_PilaDatos.h"
+#include "Funciones_Imagen.h"
+#include "Guardar_Datos.h"
+#include "T_ToolbarButton.h"
+#include "T_Calculos.h"
+SDL_Rect *Src_R = NULL;
+SDL_Rect *Dst_R = NULL;
+const int WIDTH = 791;
+const int HEIGHT = 512;
 int main(int, char**){
-	//Start up SDL and make sure it went ok
-	if (SDL_Init(SDL_INIT_VIDEO) != 0){
-		logSDLError(std::cout, "SDL_Init");
-		return 1;
-	}
-	//Also need to init SDL_ttf
-	if (TTF_Init() != 0){
-		logSDLError(std::cout, "TTF_Init");
-		SDL_Quit();
-		return 1;
-	}
-
-	//Setup our window and renderer
-	SDL_Window *window = SDL_CreateWindow("Lesson 6", SDL_WINDOWPOS_CENTERED,
-			SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-	if (window == nullptr){
-		logSDLError(std::cout, "CreateWindow");
-		TTF_Quit();
-		SDL_Quit();
-		return 1;
-	}
-	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	if (renderer == nullptr){
-		logSDLError(std::cout, "CreateRenderer");
-		cleanup(window);
-		TTF_Quit();
-		SDL_Quit();
-		return 1;
-	}
-
-	//We'll render the string "TTF fonts are cool!" in white
-	//Color is in RGB format
-	SDL_Color color = { 255, 255, 255, 255 };
-	SDL_Texture *image = renderText("TTF fonts are cool!", "harngton.ttf", color, 64, renderer);
-	if (image == nullptr){
-		cleanup(image, renderer, window);
-		TTF_Quit();
-		SDL_Quit();
-		return 1;
-	}
-
-	//Get the texture w/h so we can center it in the screen
-	int iW, iH;
-	SDL_QueryTexture(image, NULL, NULL, &iW, &iH);
-	int x = SCREEN_WIDTH / 2 - iW / 2;
-	int y = SCREEN_HEIGHT / 2 - iH / 2;
-
+	// Inicia SDL y crea la ventana de carga
 	SDL_Event e;
+	int menu_Opts;
+	SDL_Rect *Src_R = NULL;
+	SDL_Rect *Dst_R = NULL;
+
+	T_Calculos Calculos_traz;
+	long double cal_1 = 0.0;
+	long double cal_2 = 0.0;
+	std::string file_name = "";
+	std::string file_path = "";
+	const char *Load_File;
+	T_Coords Click_Pos;
+	T_PilaDatos Pila_Coords;
+    std::vector<T_ToolbarButton> Toolbar_Buttons = vec_botones();
+	std::string opcion_salir = "";
+	SDL_Texture *Radiografia = NULL;
+	SDL_Texture *Toolbar = NULL;
+	//Abre el primer archivo
+	file_path = Pedir_Archivo();
+    file_name = ID_Paciente(file_path);
+    Load_File = Path_Modificado(file_path);
+    SDL_Window *win = init_ventana();
+    // crea el "renderer" de la ventana
+    SDL_Renderer *ren = Init_Render(win);
+	Toolbar = textura_gtool(ren);
+    Radiografia = Abrir_Archivo(Load_File,ren,Toolbar,Src_R,Dst_R);
+
+
+	//For tracking if we want to quit
 	bool quit = false;
 	while (!quit){
-		//Event Polling
+        menu_Opts = 8;
+		//Read any events that occurred
 		while (SDL_PollEvent(&e)){
+			//If user closes the window
 			if (e.type == SDL_QUIT){
 				quit = true;
 			}
-			if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE){
-				quit = true;
+			//If user presses any key
+			if (e.type == SDL_KEYDOWN) {
+                SDL_Keycode key = e.key.keysym.sym;
+                std::cout << "Tecla pulsada: " << SDL_GetKeyName(key)
+                          << std::endl;
+                if (key == SDLK_ESCAPE){
+                    std::cout << "¿Seguro que quiere salir del programa? (S/N)" << std::endl;
+                    std::cin >> opcion_salir;
+                    if(!std::cin){
+                        std::cout << "error 1: incorrecta inserción de la opcion del programa. Cerrando..." << std::endl;
+                        quit = true;
+                    } else if ((opcion_salir == "S") ||(opcion_salir == "Si") || (opcion_salir == "yes")){
+                        quit = true;
+                    } else {
+                        quit = false;
+                    }
+                }
 			}
+			//If user clicks the mouse
+			if (e.type == SDL_MOUSEBUTTONDOWN){
+                if  (e.button.button == SDL_BUTTON_LEFT){
+                    Click_Pos.set_xPos(e.button.x);
+                    Click_Pos.set_yPos(e.button.y);
+                    menu_Opts = Clik_Boton(Toolbar_Buttons,Click_Pos);
+                }
+			}
+
 		}
-		SDL_RenderClear(renderer);
-		//We can draw our message as we do any other texture, since it's been
-		//rendered to a texture
-		renderTexture(image, renderer, x, y);
-		SDL_RenderPresent(renderer);
+        switch(menu_Opts){
+            case 0:
+            //Abre el archivo
+                file_path = Pedir_Archivo();
+                file_name = ID_Paciente(file_path);
+                Load_File = Path_Modificado(file_path);
+                Radiografia = Abrir_Archivo(Load_File,ren,Toolbar,Src_R,Dst_R);
+            break;
+            case 1:
+                Operate_First_Point(ren,Pila_Coords,HEIGHT,Load_File,Radiografia,Toolbar,Src_R,Dst_R);
+            break;
+            case 2:
+                Operate_Second_Point(ren,Pila_Coords,HEIGHT,Load_File,Radiografia,Toolbar,Src_R,Dst_R);
+            break;
+            case 3:
+                Recuperar_Trazados(Pila_Coords,ren,HEIGHT,Load_File,Radiografia,Toolbar,Src_R,Dst_R);
+            break;
+            case 4:
+                //Deshacer_Todo
+            break;
+            case 5:
+                guardar(file_name,cal_1,cal_2);
+            break;
+            case 9:
+                std::cout << "Error 3: click fuera de la pantalla, por favor vuelva a la ventana" <<'\n'
+                << "del programa." << std::endl;
+            break;
+        }
+
 	}
-	//Clean up
-	cleanup(image, renderer, window);
-	TTF_Quit();
+    //Take a quick break after all that hard work
+    SDL_Delay(1000);
+    // limpia y termina
+    cleanup(ren, win); // SDL_DestroyTexture(tex); SDL_DestroyRenderer(ren); SDL_DestroyWindow(win);
+	std::cout << "Programa finalizado. Adiós!" << std::endl;
 	SDL_Quit();
 
 	return 0;
 }
+
