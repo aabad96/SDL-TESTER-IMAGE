@@ -1,5 +1,5 @@
 //
-//  main.cpp
+//  main2.cpp
 //  PRUEBA MULTIVENTANA
 //
 //  Created by Alejandro Abad Martínez on 15/6/16.
@@ -62,37 +62,37 @@ SDL_Surface* loadMedia_gtool()
 }
 
 //imagen que se va a pasar
-SDL_Surface* loadMedia_glina(const char *range)
+SDL_Surface* loadMedia_gradiografia(const char *range)
 {
     //imagen que se va a pasar
-    SDL_Surface* glina;
+    SDL_Surface* gradiografia;
     
     //cargamos imagenes
     
-    glina = IMG_Load(range);
+    gradiografia = IMG_Load(range);
     
-    if (glina==NULL) {
+    if (gradiografia==NULL) {
         std::cout<<"sere fea"<<std::endl;
     }
-    return glina;
+    return gradiografia;
 }
 
-SDL_Texture* textura_glina(SDL_Renderer* render, const char *range){
+SDL_Texture* textura_gradiografia(SDL_Renderer* render, const char *range){
     //surface de la ventana
-    SDL_Surface* media_glina;
+    SDL_Surface* media_gradiografia;
     
    
-    SDL_Texture* t_glina=NULL;
+    SDL_Texture* t_gradiografia=NULL;
     
-    media_glina=loadMedia_glina(range);
+    media_gradiografia=loadMedia_gradiografia(range);
     
     
-    if (media_glina==NULL) {
+    if (media_gradiografia==NULL) {
         std::cout<< "Error no se pudo cargar la imagen1"<<std::endl;
-    }else t_glina= SDL_CreateTextureFromSurface(render, media_glina);
+    }else t_gradiografia= SDL_CreateTextureFromSurface(render, media_gradiografia);
     
-    SDL_FreeSurface(media_glina);
-    return t_glina;
+    SDL_FreeSurface(media_gradiografia);
+    return t_gradiografia;
     
 }SDL_Texture* textura_gtool(SDL_Renderer* render){
     SDL_Surface* media_gtool=NULL;
@@ -108,21 +108,21 @@ SDL_Texture* textura_glina(SDL_Renderer* render, const char *range){
 }
 
 
-void cargar_texturas( SDL_Texture* text_glina, SDL_Texture* text_gtool, SDL_Rect * srcrect,  SDL_Rect * dstrect)
+void cargar_texturas( SDL_Texture* text_gradiografia, SDL_Texture* text_gtool, SDL_Rect * srcrect,  SDL_Rect * dstrect)
 {
     SDL_Renderer* rend=NULL;
     SDL_Window* ventana=NULL;
-    SDL_Texture* t_glina=NULL;
+    SDL_Texture* t_gradiografia=NULL;
     SDL_Texture* t_gtool=NULL;
     ventana=init_ventana();
     
     rend= SDL_CreateRenderer(ventana, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     t_gtool=textura_gtool(rend);
-    t_glina=textura_glina(rend, "/Users/Alejandro/Desktop/ARCHIVOS DE XCODE/PRUEBA_MULTIVENTANA_DEFINITIVA-hhgvbailkmdwafhhrnucwdwupann/Build/Products/Debug/prueba.bmp");
+    t_gradiografia=textura_gradiografia(rend, "/Users/Alejandro/Desktop/ARCHIVOS DE XCODE/PRUEBA_MULTIVENTANA_DEFINITIVA-hhgvbailkmdwafhhrnucwdwupann/Build/Products/Debug/prueba.bmp");
     
     SDL_RenderClear(rend);
     SDL_RenderCopy(rend,t_gtool , NULL, NULL);
-    SDL_RenderCopy(rend, t_glina, srcrect, dstrect);
+    SDL_RenderCopy(rend, t_gradiografia, srcrect, dstrect);
     SDL_RenderPresent(rend);
     
     
