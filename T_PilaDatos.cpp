@@ -21,13 +21,15 @@ bool T_PilaDatos :: Insertar_Dato(T_Dato Nw_Dato)
 */
 {
     int Tam_Pila = Pila_Carga.size();
+    vector<T_Dato> Aux_Pila;
     if (Tam_Pila == 0){
-        Pila_Carga[Tam_Pila] = Nw_Dato;
+        Pila_Carga.push_back(Nw_Dato);
     } else{
-        for (int i = Tam_Pila; i > 0; i--){
-            Pila_Carga[i] = Pila_Carga[i-1];
+        Aux_Pila.push_back(Nw_Dato);
+        for (int i = 0; i < Tam_Pila; i++){
+            Aux_Pila.push_back(Pila_Carga[i]);
         }
-        Pila_Carga[0] = Nw_Dato;
+        Pila_Carga = Aux_Pila;
     }
     return(Nw_Dato.get_Estado() == Pila_Carga[0].get_Estado());
 }
@@ -102,4 +104,8 @@ bool T_PilaDatos :: Borrar_Dato(void){
 int T_PilaDatos :: Tam_Pila_Datos(void){
 
     return Pila_Carga.size();
+}
+bool T_PilaDatos :: Vaciar_Pila(void){
+    Pila_Carga.clear();
+    return (Pila_Carga.size() == 0);
 }

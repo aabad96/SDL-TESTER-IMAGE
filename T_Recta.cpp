@@ -2,9 +2,9 @@
 
 T_Recta::T_Recta(T_Coords p1, T_Coords p2)
 {
-    a_value = (double) p2.get_xPos() - (double) p1.get_xPos();
-    b_value = (double) p2.get_yPos() - (double) p1.get_yPos();
-    c_value = (double) p1.get_yPos() * (double)((double)p2.get_xPos() - (double)p1.get_xPos()) - (double)p1.get_xPos() * ((double)p2.get_yPos() - (double)p1.get_yPos());
+    a_value = (double) p2.get_yPos() - (double) p1.get_yPos();
+    b_value = (double) p2.get_xPos() - (double) p1.get_xPos();
+    c_value = ((double) p1.get_yPos() * (double)((double)p2.get_xPos() - (double)p1.get_xPos())) - ((double)p1.get_xPos() * ((double)p2.get_yPos() - (double)p1.get_yPos()));
 }
 double T_Recta :: get_Aval(void){
     return a_value;

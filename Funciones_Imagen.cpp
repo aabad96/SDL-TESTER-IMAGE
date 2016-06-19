@@ -34,7 +34,7 @@ SDL_Window* init_ventana(){
     //inicializamos SDL
     if( SDL_Init( SDL_INIT_VIDEO ) != 0 ){
         printf( "SDL no pudo inicializarse! SDL_Error: %s\n", SDL_GetError() );
-
+        exit(1);
     }
     else
     {
@@ -77,7 +77,9 @@ SDL_Surface* loadMedia_gradiografia(std::string range)
     gradiografia = IMG_Load(path);
 
     if (gradiografia==NULL) {
-        std::cout<<"sere fea"<<std::endl;
+        std::cout<<"Error : No se pudo cargar la imagen de Radiografia"<<std::endl;
+        SDL_Quit();
+        exit(2);
     }
     return gradiografia;
 }
@@ -93,7 +95,9 @@ SDL_Texture* textura_gradiografia(SDL_Renderer* render, std::string range){
 
 
     if (media_gradiografia==NULL) {
-        std::cout<< "Error no se pudo cargar la imagen1"<<std::endl;
+        std::cout<< "Error : no se pudo cargar la imagen de Radiografia"<<std::endl;
+        SDL_Quit();
+        exit(3);
     }else t_gradiografia= SDL_CreateTextureFromSurface(render, media_gradiografia);
 
     SDL_FreeSurface(media_gradiografia);
@@ -105,7 +109,9 @@ SDL_Texture* textura_gradiografia(SDL_Renderer* render, std::string range){
     media_gtool=loadMedia_gtool();
 
     if (media_gtool==NULL){
-        std::cout<< "Error no se pudo cargar la imagen2"<<std::endl;
+        std::cout<< "Error : no se pudo cargar la imagen de la Toolbar"<<std::endl;
+        SDL_Quit();
+        exit(4);
     }
     t_gtool= SDL_CreateTextureFromSurface(render, media_gtool);
     SDL_FreeSurface(media_gtool);
@@ -121,11 +127,10 @@ void cargar_texturas(SDL_Renderer *render,std::string Path,SDL_Texture* text_gra
     Dst_T.w = 791;
     Dst_T.h = 76;
     const char *file_Path = Path.c_str();
-    const char *aux_Path = "/Users/PabloAM/image.png";
     SDL_Texture* t_gradiografia=NULL;
     SDL_Texture* t_gtool=NULL;
     t_gtool=textura_gtool(render);
-    t_gradiografia=textura_gradiografia(render,aux_Path);
+    t_gradiografia=textura_gradiografia(render,file_Path);
     SDL_RenderClear(render);
     SDL_RenderCopy(render,t_gtool , NULL, &Dst_T);
     SDL_RenderCopy(render, t_gradiografia, &srcrect, &dstrect);

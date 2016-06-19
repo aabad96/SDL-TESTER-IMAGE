@@ -7,7 +7,7 @@ enum Buffer_State {first_Point_OP1,first_Point_OP2,first_Point_OP3,
 second_Point_OP1,second_Point_OP2,second_Point_OP3,second_Point_OP4,second_Point_OP5,second_Point_OP6,second_Point_End,
 Init_Image};
 /*
-    first_Point_OP1: Punto del Agujero Mentoniano, que genera una recta una vez trazado
+    first_Point_O P1: Punto del Agujero Mentoniano, que genera una recta una vez trazado
     first_Point_OP2: Primer punto de calculo del Grosor_1
     first_Point_OP3: Segundo punto de calculo del Grosor_1
     second_Point_OP1: Primer punto de la primera recta tangente del Cuerpo Mandibular
