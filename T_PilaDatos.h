@@ -22,6 +22,7 @@ class T_PilaDatos
         void Modificar_Dato(Buffer_State Nw_Estado, Sint32 Nw_x,Sint32 Nw_y, int Pos_Pila);
         int Cantidad_Estado(Buffer_State Estado_Img, int Pos_Pila);
         bool Borrar_Dato(void);
+        bool Vaciar_Pila(void);
         int Tam_Pila_Datos(void);
     protected:
 

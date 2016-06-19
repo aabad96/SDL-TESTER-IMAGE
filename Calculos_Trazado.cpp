@@ -29,8 +29,19 @@ long double distancia(T_Coords p1, T_Coords p2 ) {
 
 // calcula el punto de intersección de dos rectas
 Point intersecta( T_Recta r1,  T_Recta r2 ) {
-    double xx = (r2.get_Bval() * r1.get_Cval() - r1.get_Bval() * r2.get_Cval()) / (r2.get_Aval() * r1.get_Bval() - r1.get_Aval() * r2.get_Bval());
-    double yy = (r2.get_Aval() * r1.get_Cval() - r1.get_Aval() * r2.get_Cval()) / (r1.get_Aval() * r2.get_Bval() - r2.get_Aval() * r1.get_Bval());
+    double xx = (((r2.get_Bval() * r1.get_Cval())- (r1.get_Bval() * r2.get_Cval())) / ((r2.get_Aval() * r1.get_Bval()) - (r1.get_Aval() * r2.get_Bval())));
+    double yy = (
+                 (
+                  (r2.get_Aval() * r1.get_Cval()) -
+                  (r1.get_Aval() * r2.get_Cval())
+                ) /
+                 (
+                  (r1.get_Aval() * r2.get_Bval()) -
+                  (r2.get_Aval() * r1.get_Bval()))
+                );
+    if (yy < 0){ //convierte la y en positivo
+        yy = yy * (-1);
+    }
     return Point {xx, yy};
 }
 
@@ -51,4 +62,9 @@ Point bisector( const Point& p1, const Point& p2, const Point& p3 ) {
     long double xx = p1.x + fraccion * (p3.x - p1.x);
     long double yy = p1.y + fraccion * (p3.y - p1.y);
     return Point {xx, yy};
+}
+double Pixels_To_mm(const double &Dist){
+    double aux_dist = 0;
+    aux_dist = Dist / 1.04; //factor de conversion: 1,04px = 1mm
+    return aux_dist;
 }

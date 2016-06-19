@@ -14,5 +14,6 @@ T_Recta bisectriz( const Point&, const Point&, const Point& );
 Point intersecta( T_Recta r1,  T_Recta r2);
 Point bisector( const Point&, const Point&, const Point& );
 long double distancia(T_Coords p1, T_Coords p2);
+double Pixels_To_mm(const double &Dist);
 
 #endif

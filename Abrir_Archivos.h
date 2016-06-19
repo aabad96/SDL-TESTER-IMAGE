@@ -7,6 +7,6 @@
 std::string Pedir_Archivo(void);
 std::string ID_Paciente(std::string path_name);
 const char * Path_Modificado(std::string Path_name);
-SDL_Texture *Abrir_Archivo(const char * Path_name,SDL_Renderer *Render,SDL_Texture *Toolbar,SDL_Rect * Source_Rect,SDL_Rect * Dest_Rect);
+SDL_Texture *Abrir_Archivo(std::string Path_name,SDL_Renderer *Render,SDL_Texture *Toolbar,SDL_Rect &Source_Rect,SDL_Rect &Dest_Rect);
 
 #endif
