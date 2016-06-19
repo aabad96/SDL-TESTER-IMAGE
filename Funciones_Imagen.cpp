@@ -26,8 +26,6 @@ const int SCREEN_HEIGHT = 512;
 
 
 
-
-
 SDL_Window* init_ventana(){
 
     //iniciamos flag
@@ -64,19 +62,19 @@ SDL_Surface* loadMedia_gtool(void)
     SDL_Surface* gtool ;
 
     //cargamos imagenes
-    gtool = IMG_Load("toolbar");
+    gtool = IMG_Load("toolbar.bmp");
     return gtool;
 }
 
 //imagen que se va a pasar
-SDL_Surface* loadMedia_gradiografia(const char *range)
+SDL_Surface* loadMedia_gradiografia(std::string range)
 {
     //imagen que se va a pasar
     SDL_Surface* gradiografia;
 
     //cargamos imagenes
-
-    gradiografia = IMG_Load(range);
+    const char *path = range.c_str();
+    gradiografia = IMG_Load(path);
 
     if (gradiografia==NULL) {
         std::cout<<"sere fea"<<std::endl;
@@ -84,14 +82,14 @@ SDL_Surface* loadMedia_gradiografia(const char *range)
     return gradiografia;
 }
 
-SDL_Texture* textura_gradiografia(SDL_Renderer* render, const char *range){
+SDL_Texture* textura_gradiografia(SDL_Renderer* render, std::string range){
     //surface de la ventana
     SDL_Surface* media_gradiografia;
-
+    const char* file_Path = range.c_str();
 
     SDL_Texture* t_gradiografia=NULL;
 
-    media_gradiografia=loadMedia_gradiografia(range);
+    media_gradiografia=loadMedia_gradiografia(file_Path);
 
 
     if (media_gradiografia==NULL) {
@@ -115,16 +113,22 @@ SDL_Texture* textura_gradiografia(SDL_Renderer* render, const char *range){
 }
 
 
-void cargar_texturas(SDL_Renderer *render,const char *Path,SDL_Texture* text_gradiografia, SDL_Texture* text_gtool, SDL_Rect * srcrect,  SDL_Rect * dstrect)
+void cargar_texturas(SDL_Renderer *render,std::string Path,SDL_Texture* text_gradiografia, SDL_Texture* text_gtool, SDL_Rect &srcrect,  SDL_Rect &dstrect)
 {
+    SDL_Rect Dst_T;
+    Dst_T.x = 0;
+    Dst_T.y = 0;
+    Dst_T.w = 791;
+    Dst_T.h = 76;
+    const char *file_Path = Path.c_str();
+    const char *aux_Path = "/Users/PabloAM/image.png";
     SDL_Texture* t_gradiografia=NULL;
     SDL_Texture* t_gtool=NULL;
     t_gtool=textura_gtool(render);
-    t_gradiografia=textura_gradiografia(render, Path);
-
+    t_gradiografia=textura_gradiografia(render,aux_Path);
     SDL_RenderClear(render);
-    SDL_RenderCopy(render,t_gtool , NULL, NULL);
-    SDL_RenderCopy(render, t_gradiografia, srcrect, dstrect);
+    SDL_RenderCopy(render,t_gtool , NULL, &Dst_T);
+    SDL_RenderCopy(render, t_gradiografia, &srcrect, &dstrect);
     SDL_RenderPresent(render);
 
 
