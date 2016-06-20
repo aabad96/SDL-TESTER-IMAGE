@@ -34,7 +34,6 @@ SDL_Window* init_ventana(){
     //inicializamos SDL
     if( SDL_Init( SDL_INIT_VIDEO ) != 0 ){
         printf( "SDL no pudo inicializarse! SDL_Error: %s\n", SDL_GetError() );
-        exit(1);
     }
     else
     {
@@ -79,7 +78,6 @@ SDL_Surface* loadMedia_gradiografia(std::string range)
     if (gradiografia==NULL) {
         std::cout<<"Error : No se pudo cargar la imagen de Radiografia"<<std::endl;
         SDL_Quit();
-        exit(2);
     }
     return gradiografia;
 }
@@ -95,9 +93,8 @@ SDL_Texture* textura_gradiografia(SDL_Renderer* render, std::string range){
 
 
     if (media_gradiografia==NULL) {
-        std::cout<< "Error : no se pudo cargar la imagen de Radiografia"<<std::endl;
+        std::cout<< "Error : no se pudo cargar la textura de Radiografia"<<std::endl;
         SDL_Quit();
-        exit(3);
     }else t_gradiografia= SDL_CreateTextureFromSurface(render, media_gradiografia);
 
     SDL_FreeSurface(media_gradiografia);
@@ -111,7 +108,7 @@ SDL_Texture* textura_gradiografia(SDL_Renderer* render, std::string range){
     if (media_gtool==NULL){
         std::cout<< "Error : no se pudo cargar la imagen de la Toolbar"<<std::endl;
         SDL_Quit();
-        exit(4);
+
     }
     t_gtool= SDL_CreateTextureFromSurface(render, media_gtool);
     SDL_FreeSurface(media_gtool);
