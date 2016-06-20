@@ -45,7 +45,6 @@ bool Operate_First_Point(std::vector<T_ToolbarButton> Botones,T_Calculo &Calcs_T
     T_Coords Point_Calculate;
     T_Dato Aux_Saver;
     T_Coords Point_Calculate_2;
-    std::cout << "flag de clicks: " << click_times_flag << std::endl;
     while (endPointOps == false){
         Aux_Bool = false;
 
@@ -361,7 +360,6 @@ void Trazados_Bisectriz_Intersecta(T_PilaDatos &Img_Buffer,SDL_Renderer* Render)
         }
         if (Aux_3.x > Aux_1.x){  //si el punto mayor de Recta1 esta mas alejado que el mayor de Recta2
             Aux_4.x = Aux_1.x + 2*(Aux_3.x - Aux_1.x);
-            std::cout << "Distancia entre P4 y P3: "<< Aux_4.x << std::endl;
             Pendiente = ((Aux_1.y - Aux_2.y)/(Aux_1.x - Aux_2.x));
             Aux_4.y = (Pendiente* (Aux_4.x - Aux_1.x))+ Aux_1.y;
             SDL_SetRenderDrawColor(Render,202, 18, 202,255);
@@ -388,14 +386,16 @@ bool Deshacer_Todos_Trazados(const int &flag_Undo,T_PilaDatos &Img_Buffer,T_Calc
 */
      //limpia el renderer
     bool vaciado = false;
-    std::cout << "Flag de deshacer: " << flag_Undo << std::endl;
     if (flag_Undo == 0){
         std::cout << "Borrando los trazados del Agujero Mentoniano..." << std::endl;
         Calcs_Traz.Borrar_Calculo();
-        for (int i = 0; i < Img_Buffer.Tam_Pila_Datos(); i++){
-            Img_Buffer.Borrar_Dato();
-            std::cout << "Borrando Punto " << i+1 << "..." << std::endl;
-        }
+        Img_Buffer.Vaciar_Pila();
+        Calcs_Traz.Vaciar_Calculos();
+        SDL_RenderClear(Renderer);
+        cargar_texturas(Renderer,Path,Radio,Toolb,Src,Dst);
+        SDL_RenderPresent(Renderer);
+        vaciado = (Img_Buffer.Tam_Pila_Datos() == 0);
+
     } else if(flag_Undo == 1){ //error
         std::cout << "Borrando los trazados del Cuerpo Mandibular y Agujero Mentoniano..." << std::endl;
         Img_Buffer.Vaciar_Pila();
